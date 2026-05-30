@@ -16,6 +16,7 @@
   --amber-bg: #FAEEDA; --amber-border: #BA7517; --amber-text: #854F0B;
   --red-bg: #FCEBEB; --red-border: #E24B4A; --red-text: #A32D2D;
   --star-lit: #BA7517; --success: #3B6D11; --danger: #A32D2D;
+  --score-0: #E24B4A; --score-1: #BA7517; --score-2: #639922; --score-blank: #d0cfc8;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -25,18 +26,18 @@
     --amber-bg: #412402; --amber-border: #BA7517; --amber-text: #FAC775;
     --red-bg: #501313; --red-border: #E24B4A; --red-text: #F7C1C1;
     --star-lit: #FAC775; --success: #C0DD97; --danger: #F7C1C1;
+    --score-blank: #3a3a34;
   }
 }
 body { background: var(--bg); color: var(--text-primary); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
 .nav { display: flex; background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 100; }
-.nav-btn { flex: 1; padding: 14px 8px 12px; border: none; background: transparent; font-size: 12px; font-weight: 500; color: var(--text-muted); cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; border-bottom: 2px solid transparent; transition: all 0.15s; }
+.nav-btn { flex: 1; padding: 14px 4px 12px; border: none; background: transparent; font-size: 11px; font-weight: 500; color: var(--text-muted); cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; border-bottom: 2px solid transparent; transition: all 0.15s; }
 .nav-btn.active { color: var(--text-primary); border-bottom-color: var(--text-primary); }
-.auth-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 1.25rem; background: var(--surface); border-bottom: 0.5px solid var(--border); font-size: 13px; }
-.auth-status { display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
+.auth-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 1.25rem; background: var(--surface); border-bottom: 0.5px solid var(--border); }
+.auth-status { display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 13px; }
 .auth-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border-mid); flex-shrink: 0; }
 .auth-dot.connected { background: var(--green-border); }
-.auth-btn { padding: 5px 12px; border-radius: 99px; border: 0.5px solid var(--border-mid); background: transparent; font-size: 12px; color: var(--text-secondary); cursor: pointer; transition: all 0.12s; }
-.auth-btn:hover { background: var(--bg); }
+.auth-btn { padding: 5px 12px; border-radius: 99px; border: 0.5px solid var(--border-mid); background: transparent; font-size: 12px; color: var(--text-secondary); cursor: pointer; }
 .page { display: none; padding: 1.5rem 1rem 4rem; max-width: 480px; margin: 0 auto; }
 .page.active { display: block; }
 .heading { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
@@ -60,7 +61,6 @@ body { background: var(--bg); color: var(--text-primary); font-family: -apple-sy
 .score-group { display: flex; gap: 5px; flex-shrink: 0; }
 .score-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .score-btn { width: 38px; height: 38px; border-radius: var(--radius-sm); border: 0.5px solid var(--border-mid); background: transparent; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all 0.12s; }
-.score-btn:hover { background: var(--bg); }
 .score-btn.s0 { background: var(--red-bg); border-color: var(--red-border); color: var(--red-text); }
 .score-btn.s1 { background: var(--amber-bg); border-color: var(--amber-border); color: var(--amber-text); }
 .score-btn.s2 { background: var(--green-bg); border-color: var(--green-border); color: var(--green-text); }
@@ -70,12 +70,13 @@ body { background: var(--bg); color: var(--text-primary); font-family: -apple-sy
 .pill.on { background: var(--surface); border-color: var(--text-secondary); color: var(--text-primary); font-weight: 500; box-shadow: 0 0 0 1px var(--border-mid); }
 textarea { width: 100%; border: none; background: transparent; font-size: 14px; color: var(--text-primary); resize: none; outline: none; font-family: inherit; line-height: 1.6; padding: 0; min-height: 48px; }
 textarea::placeholder { color: var(--text-muted); }
+.text-input { width: 100%; border: none; background: transparent; font-size: 14px; color: var(--text-primary); outline: none; font-family: inherit; padding: 0; }
+.text-input::placeholder { color: var(--text-muted); }
 .star-row { display: flex; gap: 4px; flex-shrink: 0; }
 .star { width: 30px; height: 30px; border: none; background: transparent; font-size: 20px; cursor: pointer; color: var(--border-mid); padding: 0; line-height: 1; transition: color 0.1s; }
 .star.lit { color: var(--star-lit); }
 .submit-btn { width: 100%; padding: 13px; border-radius: var(--radius); border: 0.5px solid var(--border-mid); background: var(--surface); font-size: 15px; font-weight: 500; color: var(--text-primary); cursor: pointer; transition: all 0.12s; }
 .submit-btn:hover { background: var(--bg); }
-.submit-btn:active { transform: scale(0.98); }
 .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .coach-note { border-left: 2px solid var(--border-mid); padding: 1rem 1.25rem; font-size: 14px; color: var(--text-secondary); line-height: 1.7; display: none; margin-top: 1.25rem; }
 .save-status { font-size: 13px; text-align: center; margin-top: 10px; display: none; }
@@ -85,13 +86,62 @@ textarea::placeholder { color: var(--text-muted); }
 .data-row:last-child { margin-bottom: 0; }
 .data-lbl { font-size: 13px; color: var(--text-secondary); width: 130px; flex-shrink: 0; }
 .data-input { flex: 1; font-size: 13px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); padding: 6px 10px; background: var(--bg); color: var(--text-primary); outline: none; font-family: inherit; }
-.data-input:focus { border-color: var(--text-muted); }
 .insight-box { display: none; margin-top: 1.5rem; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; }
 .insight-block { padding: 1rem 1.25rem; border-bottom: 0.5px solid var(--border); }
 .insight-block:last-child { border-bottom: none; }
 .insight-block-label { font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
 .insight-block-text { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
-.weekend-hint { font-size: 12px; color: var(--text-muted); font-style: italic; padding-top: 6px; }
+
+/* ── TRENDS ── */
+.trends-section { margin-bottom: 2rem; }
+.trends-heading { font-size: 15px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+.trends-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
+.loading-state { font-size: 13px; color: var(--text-muted); padding: 2rem 0; text-align: center; }
+
+/* Calendar */
+.cal-wrap { overflow-x: auto; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; min-width: 280px; }
+.cal-dow { font-size: 10px; color: var(--text-muted); text-align: center; padding-bottom: 4px; font-weight: 500; }
+.cal-day { aspect-ratio: 1; border-radius: 4px; background: var(--bg); border: 0.5px solid var(--border); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 2px; position: relative; transition: transform 0.1s; }
+.cal-day:hover { transform: scale(1.08); z-index: 10; }
+.cal-day.empty { background: transparent; border-color: transparent; cursor: default; }
+.cal-day.empty:hover { transform: none; }
+.cal-date-num { font-size: 9px; color: var(--text-muted); line-height: 1; }
+.block-dots { display: flex; gap: 1px; flex-wrap: wrap; justify-content: center; }
+.block-dot { width: 6px; height: 6px; border-radius: 1px; }
+.cal-tooltip { position: fixed; background: var(--surface); border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; color: var(--text-secondary); line-height: 1.7; z-index: 1000; max-width: 220px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); display: none; pointer-events: none; }
+.cal-tooltip-title { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+.cal-tooltip-row { display: flex; justify-content: space-between; gap: 12px; }
+.cal-tooltip-val { font-weight: 500; color: var(--text-primary); }
+
+/* Line chart */
+.chart-canvas-wrap { position: relative; width: 100%; height: 160px; }
+canvas.line-chart { width: 100% !important; height: 160px !important; }
+
+/* Block bar chart */
+.block-bar-wrap { display: flex; flex-direction: column; gap: 8px; }
+.block-bar-row { display: flex; align-items: center; gap: 10px; }
+.block-bar-label { font-size: 12px; color: var(--text-secondary); width: 80px; flex-shrink: 0; text-align: right; }
+.block-bar-track { flex: 1; height: 8px; background: var(--bg); border-radius: 99px; overflow: hidden; }
+.block-bar-fill { height: 100%; border-radius: 99px; background: var(--green-border); transition: width 0.6s ease; }
+.block-bar-pct { font-size: 11px; color: var(--text-muted); width: 32px; flex-shrink: 0; }
+
+/* Sleep chart */
+.sleep-chart-wrap { position: relative; width: 100%; height: 120px; }
+
+/* Learning log */
+.learn-log { display: flex; flex-direction: column; gap: 0; }
+.learn-log-row { display: flex; align-items: baseline; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--border); }
+.learn-log-row:last-child { border-bottom: none; }
+.learn-log-date { font-size: 11px; color: var(--text-muted); width: 48px; flex-shrink: 0; }
+.learn-log-entry { font-size: 13px; color: var(--text-secondary); }
+.learn-log-none { font-size: 13px; color: var(--text-muted); font-style: italic; padding: 8px 0; }
+
+/* Stat pills row */
+.stat-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.stat-pill { flex: 1; min-width: 80px; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; text-align: center; }
+.stat-pill-val { font-size: 20px; font-weight: 500; color: var(--text-primary); }
+.stat-pill-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 </style>
 </head>
 <body>
@@ -100,31 +150,22 @@ textarea::placeholder { color: var(--text-muted); }
   <button class="nav-btn active" onclick="switchTab('lunch')">Lunch</button>
   <button class="nav-btn" onclick="switchTab('evening')">Evening</button>
   <button class="nav-btn" onclick="switchTab('weekly')">Weekly</button>
+  <button class="nav-btn" onclick="switchTab('trends')">Trends</button>
 </nav>
-
 <div class="auth-bar">
-  <div class="auth-status">
-    <div class="auth-dot" id="auth-dot"></div>
-    <span id="auth-label">Not connected to Sheets</span>
-  </div>
+  <div class="auth-status"><div class="auth-dot" id="auth-dot"></div><span id="auth-label">Not connected</span></div>
   <button class="auth-btn" id="auth-btn" onclick="handleAuth()">Sign in</button>
 </div>
 
-<!-- LUNCH -->
+<!-- ═══ LUNCH ═══ -->
 <div class="page active" id="page-lunch">
   <p class="heading">Lunch check-in</p>
   <p class="subdate" id="lunch-date"></p>
   <div class="section">
     <div class="label">Sleep</div>
     <div class="card">
-      <div class="row">
-        <span class="row-name"><i class="ti ti-moon"></i> Lights out</span>
-        <input type="time" class="time-input" id="l-lights-out" value="22:00">
-      </div>
-      <div class="row" style="border-bottom:none;">
-        <span class="row-name"><i class="ti ti-sun"></i> Wake time</span>
-        <input type="time" class="time-input" id="l-wake-time" value="05:45">
-      </div>
+      <div class="row"><span class="row-name"><i class="ti ti-moon"></i> Lights out</span><input type="time" class="time-input" id="l-lights-out" value="22:00"></div>
+      <div class="row" style="border-bottom:none;"><span class="row-name"><i class="ti ti-sun"></i> Wake time</span><input type="time" class="time-input" id="l-wake-time" value="05:45"></div>
       <div class="sleep-stats">
         <div class="sleep-stat"><div class="sleep-stat-val" id="l-sleep-hrs">—</div><div class="sleep-stat-lbl">hours slept</div></div>
         <div class="sleep-stat"><div class="sleep-stat-val" id="l-sleep-vs">—</div><div class="sleep-stat-lbl">vs. 7.5h target</div></div>
@@ -173,7 +214,7 @@ textarea::placeholder { color: var(--text-muted); }
   <div class="coach-note" id="l-coach-note"></div>
 </div>
 
-<!-- EVENING -->
+<!-- ═══ EVENING ═══ -->
 <div class="page" id="page-evening">
   <p class="heading">Evening check-in</p>
   <p class="subdate" id="eve-date"></p>
@@ -184,6 +225,8 @@ textarea::placeholder { color: var(--text-muted); }
       <button class="pill" onclick="setEveDay('Weekend',this)">Weekend</button>
     </div>
   </div>
+
+  <!-- Weekday blocks -->
   <div id="e-weekday-section">
     <div class="section">
       <div class="label">Block scores</div>
@@ -214,37 +257,58 @@ textarea::placeholder { color: var(--text-muted); }
         </div>
       </div>
     </div>
+    <div class="section">
+      <div class="label">Learning activity</div>
+      <div class="card">
+        <div class="pills" id="e-learn-pills" style="margin-bottom:12px;">
+          <button class="pill" onclick="setLearn('Podcast',this)">Podcast</button>
+          <button class="pill" onclick="setLearn('Memo/pitch',this)">Memo / pitch</button>
+          <button class="pill" onclick="setLearn('HF letter',this)">HF letter</button>
+          <button class="pill" onclick="setLearn('Book',this)">Book</button>
+          <button class="pill" onclick="setLearn('Article',this)">Article</button>
+          <button class="pill" onclick="setLearn('None',this)">None today</button>
+        </div>
+        <input class="text-input" id="e-learn-detail" placeholder="Title or topic...">
+      </div>
+    </div>
   </div>
+
+  <!-- Weekend section -->
   <div id="e-weekend-section" style="display:none;">
     <div class="section">
-      <div class="label">Weekend block</div>
+      <div class="label">Afternoon activity</div>
       <div class="card">
-        <div class="row">
-          <div class="row-left"><span class="row-name"><i class="ti ti-friends"></i> Social / personal</span></div>
-          <div class="score-group" data-block="e-weekend">
-            <div class="score-wrap"><button class="score-btn" data-val="0">0</button><span class="score-lbl">skip</span></div>
-            <div class="score-wrap"><button class="score-btn" data-val="1">1</button><span class="score-lbl">partial</span></div>
-            <div class="score-wrap"><button class="score-btn" data-val="2">2</button><span class="score-lbl">nailed</span></div>
-          </div>
+        <div class="pills" id="e-wknd-aft-pills" style="margin-bottom:12px;">
+          <button class="pill" onclick="setWkndPill('aft','Social',this)">Social</button>
+          <button class="pill" onclick="setWkndPill('aft','Date',this)">Date</button>
+          <button class="pill" onclick="setWkndPill('aft','Family',this)">Family</button>
+          <button class="pill" onclick="setWkndPill('aft','Active',this)">Active</button>
+          <button class="pill" onclick="setWkndPill('aft','Culture',this)">Culture</button>
+          <button class="pill" onclick="setWkndPill('aft','Travel',this)">Travel</button>
+          <button class="pill" onclick="setWkndPill('aft','Rest',this)">Rest</button>
+          <button class="pill" onclick="setWkndPill('aft','Errand',this)">Errand</button>
         </div>
-        <p class="weekend-hint">Did you use your afternoon/evening intentionally — socially, for wellbeing, or something meaningful?</p>
+        <input class="text-input" id="e-wknd-aft-detail" placeholder="e.g. Walk with Alex...">
+      </div>
+    </div>
+    <div class="section">
+      <div class="label">Evening activity</div>
+      <div class="card">
+        <div class="pills" id="e-wknd-eve-pills" style="margin-bottom:12px;">
+          <button class="pill" onclick="setWkndPill('eve','Social',this)">Social</button>
+          <button class="pill" onclick="setWkndPill('eve','Date',this)">Date</button>
+          <button class="pill" onclick="setWkndPill('eve','Family',this)">Family</button>
+          <button class="pill" onclick="setWkndPill('eve','Active',this)">Active</button>
+          <button class="pill" onclick="setWkndPill('eve','Culture',this)">Culture</button>
+          <button class="pill" onclick="setWkndPill('eve','Travel',this)">Travel</button>
+          <button class="pill" onclick="setWkndPill('eve','Rest',this)">Rest</button>
+          <button class="pill" onclick="setWkndPill('eve','Errand',this)">Errand</button>
+        </div>
+        <input class="text-input" id="e-wknd-eve-detail" placeholder="e.g. Dinner with friends...">
       </div>
     </div>
   </div>
-  <div class="section">
-    <div class="label">Learning activity</div>
-    <div class="card">
-      <div class="pills" id="e-learn-pills" style="margin-bottom:12px;">
-        <button class="pill" onclick="setLearn('Podcast',this)">Podcast</button>
-        <button class="pill" onclick="setLearn('Memo / pitch',this)">Memo / pitch</button>
-        <button class="pill" onclick="setLearn('HF letter',this)">HF letter</button>
-        <button class="pill" onclick="setLearn('Book',this)">Book</button>
-        <button class="pill" onclick="setLearn('Article',this)">Article</button>
-        <button class="pill" onclick="setLearn('None',this)">None today</button>
-      </div>
-      <textarea id="e-learn-detail" placeholder="Title or topic..." rows="1"></textarea>
-    </div>
-  </div>
+
   <div class="section">
     <div class="label">Daily scores</div>
     <div class="card">
@@ -258,20 +322,18 @@ textarea::placeholder { color: var(--text-muted); }
   <div class="coach-note" id="e-coach-note"></div>
 </div>
 
-<!-- WEEKLY -->
+<!-- ═══ WEEKLY ═══ -->
 <div class="page" id="page-weekly">
   <p class="heading">Weekly review</p>
   <p class="subdate" id="weekly-date"></p>
   <div class="section">
-    <div class="label">Weekly averages from sheet</div>
-    <p class="hint">Pull these from your Life Tracker spreadsheet.</p>
-    <div class="card">
-      <div class="data-row"><span class="data-lbl">Avg sleep</span><input class="data-input" id="w-sleep" placeholder="e.g. 7.2h"></div>
-      <div class="data-row"><span class="data-lbl">Avg block score</span><input class="data-input" id="w-blocks" placeholder="e.g. 8.5 / 12"></div>
-      <div class="data-row"><span class="data-lbl">Avg focus</span><input class="data-input" id="w-focus" placeholder="e.g. 3.4 / 5"></div>
-      <div class="data-row"><span class="data-lbl">Avg mood</span><input class="data-input" id="w-mood" placeholder="e.g. 3.8 / 5"></div>
-      <div class="data-row"><span class="data-lbl">Avg energy</span><input class="data-input" id="w-energy" placeholder="e.g. 3.2 / 5"></div>
-      <div class="data-row"><span class="data-lbl">Learning days</span><input class="data-input" id="w-learn" placeholder="e.g. 4 / 5 weekdays"></div>
+    <div class="label">This week at a glance</div>
+    <p class="hint">Auto-populated from your sheet — sign in and these fill automatically.</p>
+    <div class="stat-pills">
+      <div class="stat-pill"><div class="stat-pill-val" id="w-avg-sleep">—</div><div class="stat-pill-lbl">Avg sleep</div></div>
+      <div class="stat-pill"><div class="stat-pill-val" id="w-avg-habit">—</div><div class="stat-pill-lbl">Habit %</div></div>
+      <div class="stat-pill"><div class="stat-pill-val" id="w-avg-wellbeing">—</div><div class="stat-pill-lbl">Wellbeing</div></div>
+      <div class="stat-pill"><div class="stat-pill-val" id="w-learn-days">—</div><div class="stat-pill-lbl">Learning days</div></div>
     </div>
   </div>
   <div class="section">
@@ -298,379 +360,644 @@ textarea::placeholder { color: var(--text-muted); }
   </div>
 </div>
 
+<!-- ═══ TRENDS ═══ -->
+<div class="page" id="page-trends">
+  <p class="heading">Trends</p>
+  <p class="subdate" id="trends-date"></p>
+  <div id="trends-loading" class="loading-state">Sign in and data will load automatically.</div>
+  <div id="trends-content" style="display:none;">
+
+    <div class="trends-section">
+      <div class="trends-heading">30-day block heatmap</div>
+      <div class="trends-sub">Each day shows 6 blocks (weekday) or 3 blocks (weekend). Tap a day for details.</div>
+      <div class="cal-wrap">
+        <div class="cal-grid" id="cal-dow-row"></div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+    </div>
+
+    <div class="trends-section">
+      <div class="trends-heading">Habit % vs Wellbeing</div>
+      <div class="trends-sub">30-day trend. Habit % = block score / max possible. Wellbeing = avg of focus, mood, energy.</div>
+      <div class="card"><div class="chart-canvas-wrap"><canvas id="dual-chart"></canvas></div></div>
+    </div>
+
+    <div class="trends-section">
+      <div class="trends-heading">Block breakdown</div>
+      <div class="trends-sub">Average score per block over last 30 days (weekdays only).</div>
+      <div class="card"><div class="block-bar-wrap" id="block-bars"></div></div>
+    </div>
+
+    <div class="trends-section">
+      <div class="trends-heading">Sleep</div>
+      <div class="trends-sub">Nightly hours over last 30 days. Dashed line = 7.5h target.</div>
+      <div class="card"><div class="sleep-chart-wrap"><canvas id="sleep-chart"></canvas></div></div>
+    </div>
+
+    <div class="trends-section">
+      <div class="trends-heading">Learning log</div>
+      <div class="trends-sub">Last 14 days of investing & learning activity.</div>
+      <div class="card"><div class="learn-log" id="learn-log"></div></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="cal-tooltip" id="cal-tooltip"></div>
+
 <script>
-// ── CONFIG ────────────────────────────────────────────────────────
+// ── CONFIG ────────────────────────────────────────────────
 const CLIENT_ID = '553850980545-ikp982o42obt65sp16hk9go8qm22er26.apps.googleusercontent.com';
 const SHEET_ID  = '1-c5M0J3ieK47k1WwuCApoMoJbO72bBb1pvwCuY5hnME';
 const SHEET_TAB = 'Sheet1';
 const SCOPES    = 'https://www.googleapis.com/auth/spreadsheets';
 
-// Column order in the sheet (1-indexed, but we use 0-indexed arrays)
-// A  B         C          D                  E                F        G       H     I         J       K        L              M      N                   O                        P        Q      R       S
-// Date | DayType | WakeTime | LightsOut(prev) | SleepDuration | Wakeup | Morning | Lunch | Afternoon | Dinner | Winddown | WeekendBlock | DailyTotal | DeepWork | LearningType | LearningDetail | Focus | Mood | Energy
-const COL = {
+// Column indices (0-based)
+const C = {
   date:0, dayType:1, wakeTime:2, lightsOut:3, sleepDuration:4,
   wakeup:5, morning:6, lunch:7,
-  afternoon:8, dinner:9, winddown:10, weekend:11,
-  dailyTotal:12,
-  deepWork:13, learnType:14, learnDetail:15,
-  focus:16, mood:17, energy:18
+  afternoon:8, dinner:9, winddown:10,
+  wkndAft:11, wkndEve:12,
+  habitPct:13, wellbeingAvg:14,
+  deepWork:15, learnActivity:16,
+  focus:17, mood:18, energy:19
 };
-const TOTAL_COLS = 19;
+const TOTAL_COLS = 20;
+const BLOCK_COLS_WEEKDAY = [C.wakeup, C.morning, C.lunch, C.afternoon, C.dinner, C.winddown];
+const BLOCK_COLS_WEEKEND = [C.wakeup, C.morning, C.lunch];
+const BLOCK_NAMES = ['Wake-up','Morning','Lunch','Afternoon','Dinner','Wind-down'];
 
-// ── DATES ─────────────────────────────────────────────────────────
-const DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const now    = new Date();
+// ── DATES ─────────────────────────────────────────────────
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const now = new Date();
 const todayISO = now.toISOString().split('T')[0];
-const dateLabel = d => DAYS[d.getDay()] + ', ' + MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+const fmtDate = d => DAYS[d.getDay()]+', '+MONTHS[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+document.getElementById('lunch-date').textContent = fmtDate(now);
+document.getElementById('eve-date').textContent   = fmtDate(now);
+document.getElementById('trends-date').textContent = fmtDate(now);
+const sun = new Date(now); sun.setDate(now.getDate()-now.getDay());
+const sat = new Date(sun); sat.setDate(sun.getDate()+6);
+document.getElementById('weekly-date').textContent = 'Week of '+MONTHS[sun.getMonth()]+' '+sun.getDate()+' – '+MONTHS[sat.getMonth()]+' '+sat.getDate();
 
-document.getElementById('lunch-date').textContent = dateLabel(now);
-document.getElementById('eve-date').textContent   = dateLabel(now);
-const sun = new Date(now); sun.setDate(now.getDate() - now.getDay());
-const sat = new Date(sun); sat.setDate(sun.getDate() + 6);
-document.getElementById('weekly-date').textContent = 'Week of ' + MONTHS[sun.getMonth()] + ' ' + sun.getDate() + ' – ' + MONTHS[sat.getMonth()] + ' ' + sat.getDate();
-
-// ── NAV ───────────────────────────────────────────────────────────
+// ── NAV ───────────────────────────────────────────────────
 function switchTab(tab) {
-  document.querySelectorAll('.nav-btn').forEach((b,i) => b.classList.toggle('active', ['lunch','evening','weekly'][i] === tab));
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + tab).classList.add('active');
+  const tabs=['lunch','evening','weekly','trends'];
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',tabs[i]===tab));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');
+  if(tab==='trends') loadTrends();
+  if(tab==='weekly') loadWeeklySummary();
 }
 
-// ── AUTH ──────────────────────────────────────────────────────────
-let accessToken = null, tokenClient = null;
-window.addEventListener('load', () => {
-  const saved = sessionStorage.getItem('lt_token');
-  if (saved) { accessToken = saved; updateAuthUI(true); }
+// ── AUTH ──────────────────────────────────────────────────
+let accessToken=null, tokenClient=null;
+window.addEventListener('load',()=>{
+  const s=sessionStorage.getItem('lt_token');
+  if(s){accessToken=s;updateAuthUI(true);}
 });
-function initTokenClient() {
-  if (!window.google) { setTimeout(initTokenClient, 500); return; }
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID, scope: SCOPES,
-    callback: resp => {
-      if (resp.error) { updateAuthUI(false); return; }
-      accessToken = resp.access_token;
-      sessionStorage.setItem('lt_token', accessToken);
+function initTC(){
+  if(!window.google){setTimeout(initTC,500);return;}
+  tokenClient=google.accounts.oauth2.initTokenClient({
+    client_id:CLIENT_ID,scope:SCOPES,
+    callback:r=>{
+      if(r.error){updateAuthUI(false);return;}
+      accessToken=r.access_token;
+      sessionStorage.setItem('lt_token',accessToken);
       updateAuthUI(true);
     }
   });
 }
-initTokenClient();
-function handleAuth() {
-  if (accessToken) { accessToken = null; sessionStorage.removeItem('lt_token'); updateAuthUI(false); }
-  else if (tokenClient) tokenClient.requestAccessToken();
-  else alert('Google auth not loaded yet — try again.');
+initTC();
+function handleAuth(){
+  if(accessToken){accessToken=null;sessionStorage.removeItem('lt_token');updateAuthUI(false);}
+  else if(tokenClient) tokenClient.requestAccessToken();
 }
-function updateAuthUI(on) {
-  document.getElementById('auth-dot').className   = 'auth-dot' + (on ? ' connected' : '');
-  document.getElementById('auth-label').textContent = on ? 'Connected to Sheets' : 'Not connected to Sheets';
-  document.getElementById('auth-btn').textContent   = on ? 'Sign out' : 'Sign in';
-}
-
-// ── SHEETS HELPERS ────────────────────────────────────────────────
-async function getSheetData() {
-  if (!accessToken) return null;
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(SHEET_TAB)}`;
-  const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + accessToken } });
-  if (!res.ok) { if (res.status === 401) { accessToken = null; sessionStorage.removeItem('lt_token'); updateAuthUI(false); } return null; }
-  const data = await res.json();
-  return data.values || [];
+function updateAuthUI(on){
+  document.getElementById('auth-dot').className='auth-dot'+(on?' connected':'');
+  document.getElementById('auth-label').textContent=on?'Connected to Sheets':'Not connected';
+  document.getElementById('auth-btn').textContent=on?'Sign out':'Sign in';
 }
 
-async function findTodayRow(rows) {
-  // Returns 1-based row index of today's row, or -1 if not found
-  // Row 0 is header
-  for (let i = 1; i < rows.length; i++) {
-    if (rows[i][COL.date] === todayISO) return i + 1; // 1-based for Sheets API
-  }
+// ── SHEETS ────────────────────────────────────────────────
+async function getSheetData(){
+  if(!accessToken) return null;
+  const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(SHEET_TAB)}`;
+  const res=await fetch(url,{headers:{'Authorization':'Bearer '+accessToken}});
+  if(!res.ok){if(res.status===401){accessToken=null;sessionStorage.removeItem('lt_token');updateAuthUI(false);}return null;}
+  const d=await res.json(); return d.values||[];
+}
+
+async function findTodayRowIdx(rows){
+  for(let i=1;i<rows.length;i++) if(rows[i][C.date]===todayISO) return i+1;
   return -1;
 }
 
-async function upsertRow(updates) {
-  // updates is an object of { colIndex: value }
-  if (!accessToken) return { ok: false, msg: 'Not signed in to Google.' };
-  try {
-    const rows = await getSheetData();
-    if (!rows) return { ok: false, msg: 'Could not read sheet.' };
+function computeHabitPct(row){
+  const isWknd=(row[C.dayType]||'').toLowerCase()==='weekend';
+  const cols=isWknd?BLOCK_COLS_WEEKEND:BLOCK_COLS_WEEKDAY;
+  let sum=0,max=0;
+  cols.forEach(c=>{const v=parseFloat(row[c]);if(!isNaN(v)){sum+=v;max+=2;}});
+  if(max===0) return '';
+  return Math.round((sum/max)*100)+'%';
+}
 
-    const rowIdx = await findTodayRow(rows);
+function computeWellbeingAvg(row){
+  const vals=[C.focus,C.mood,C.energy].map(c=>parseFloat(row[c])).filter(v=>!isNaN(v));
+  if(!vals.length) return '';
+  return (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);
+}
 
-    if (rowIdx === -1) {
-      // No row for today yet — append a new one
-      const newRow = Array(TOTAL_COLS).fill('');
-      newRow[COL.date] = todayISO;
-      Object.entries(updates).forEach(([col, val]) => { newRow[parseInt(col)] = val; });
-      // Compute daily total
-      newRow[COL.dailyTotal] = computeTotal(newRow);
-
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(SHEET_TAB)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
-      const res = await fetch(url, {
-        method: 'POST', headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ values: [newRow] })
-      });
-      if (!res.ok) { const e = await res.json(); return { ok: false, msg: e.error?.message || 'Sheets error' }; }
-      return { ok: true };
+async function upsertRow(updates){
+  if(!accessToken) return {ok:false,msg:'Not signed in.'};
+  try{
+    const rows=await getSheetData();
+    if(!rows) return {ok:false,msg:'Could not read sheet.'};
+    const rowIdx=await findTodayRowIdx(rows);
+    if(rowIdx===-1){
+      const nr=Array(TOTAL_COLS).fill('');
+      nr[C.date]=todayISO;
+      Object.entries(updates).forEach(([c,v])=>{nr[parseInt(c)]=v;});
+      nr[C.habitPct]=computeHabitPct(nr);
+      nr[C.wellbeingAvg]=computeWellbeingAvg(nr);
+      const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(SHEET_TAB)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+      const res=await fetch(url,{method:'POST',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({values:[nr]})});
+      if(!res.ok){const e=await res.json();return {ok:false,msg:e.error?.message||'Sheets error'};}
+      return {ok:true};
     } else {
-      // Row exists — update only the changed columns
-      const existingRow = rows[rowIdx - 1] ? [...rows[rowIdx - 1]] : Array(TOTAL_COLS).fill('');
-      // Pad if shorter than expected
-      while (existingRow.length < TOTAL_COLS) existingRow.push('');
-      Object.entries(updates).forEach(([col, val]) => { existingRow[parseInt(col)] = val; });
-      existingRow[COL.dailyTotal] = computeTotal(existingRow);
-
-      const range = `${SHEET_TAB}!A${rowIdx}`;
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
-      const res = await fetch(url, {
-        method: 'PUT', headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ values: [existingRow] })
-      });
-      if (!res.ok) { const e = await res.json(); return { ok: false, msg: e.error?.message || 'Sheets error' }; }
-      return { ok: true };
+      const er=[...(rows[rowIdx-1]||[])];
+      while(er.length<TOTAL_COLS) er.push('');
+      Object.entries(updates).forEach(([c,v])=>{er[parseInt(c)]=v;});
+      er[C.habitPct]=computeHabitPct(er);
+      er[C.wellbeingAvg]=computeWellbeingAvg(er);
+      const range=`${SHEET_TAB}!A${rowIdx}`;
+      const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
+      const res=await fetch(url,{method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({values:[er]})});
+      if(!res.ok){const e=await res.json();return {ok:false,msg:e.error?.message||'Sheets error'};}
+      return {ok:true};
     }
-  } catch(e) { return { ok: false, msg: 'Network error — check connection.' }; }
+  } catch(e){return {ok:false,msg:'Network error.'};}
 }
 
-function computeTotal(row) {
-  const cols = [COL.wakeup, COL.morning, COL.lunch, COL.afternoon, COL.dinner, COL.winddown, COL.weekend];
-  return cols.reduce((sum, c) => { const v = parseInt(row[c]); return sum + (isNaN(v) ? 0 : v); }, 0);
+function showSaveStatus(id,ok,msg){
+  const el=document.getElementById(id);
+  el.style.display='block'; el.className='save-status '+(ok?'ok':'err');
+  el.textContent=ok?'✓ Saved to Google Sheets':'⚠ '+msg;
 }
 
-function showSaveStatus(id, ok, msg) {
-  const el = document.getElementById(id);
-  el.style.display = 'block';
-  el.className = 'save-status ' + (ok ? 'ok' : 'err');
-  el.textContent = ok ? '✓ Saved to Google Sheets' : '⚠ ' + msg;
-}
-
-// ── SCORE BUTTONS ─────────────────────────────────────────────────
-const blockScores = {};
-document.querySelectorAll('.score-group').forEach(g => {
-  blockScores[g.dataset.block] = null;
-  g.querySelectorAll('.score-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      g.querySelectorAll('.score-btn').forEach(b => b.className = 'score-btn');
-      const v = parseInt(btn.dataset.val);
-      btn.classList.add('s' + v);
-      blockScores[g.dataset.block] = v;
+// ── SCORE BUTTONS ─────────────────────────────────────────
+const blockScores={};
+document.querySelectorAll('.score-group').forEach(g=>{
+  blockScores[g.dataset.block]=null;
+  g.querySelectorAll('.score-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      g.querySelectorAll('.score-btn').forEach(b=>b.className='score-btn');
+      const v=parseInt(btn.dataset.val); btn.classList.add('s'+v);
+      blockScores[g.dataset.block]=v;
     });
   });
 });
 
-// ── SLEEP ─────────────────────────────────────────────────────────
-function calcSleep() {
-  const lo = document.getElementById('l-lights-out').value;
-  const wt = document.getElementById('l-wake-time').value;
-  if (!lo || !wt) return null;
-  const [lh,lm] = lo.split(':').map(Number);
-  const [wh,wm] = wt.split(':').map(Number);
-  let mins = (wh*60+wm)-(lh*60+lm);
-  if (mins < 0) mins += 1440;
-  const hrs = (mins/60).toFixed(1);
-  document.getElementById('l-sleep-hrs').textContent = hrs + 'h';
-  const diff = parseFloat(hrs) - 7.5;
-  const vsEl = document.getElementById('l-sleep-vs');
-  vsEl.textContent = (diff >= 0 ? '+' : '') + diff.toFixed(1) + 'h';
-  vsEl.style.color = diff >= -0.5 ? 'var(--success)' : 'var(--danger)';
+// ── SLEEP ─────────────────────────────────────────────────
+function calcSleep(){
+  const lo=document.getElementById('l-lights-out').value;
+  const wt=document.getElementById('l-wake-time').value;
+  if(!lo||!wt) return null;
+  const [lh,lm]=lo.split(':').map(Number);
+  const [wh,wm]=wt.split(':').map(Number);
+  let mins=(wh*60+wm)-(lh*60+lm); if(mins<0) mins+=1440;
+  const hrs=(mins/60).toFixed(1);
+  document.getElementById('l-sleep-hrs').textContent=hrs+'h';
+  const diff=parseFloat(hrs)-7.5;
+  const el=document.getElementById('l-sleep-vs');
+  el.textContent=(diff>=0?'+':'')+diff.toFixed(1)+'h';
+  el.style.color=diff>=-0.5?'var(--success)':'var(--danger)';
   return hrs;
 }
-document.getElementById('l-lights-out').addEventListener('change', calcSleep);
-document.getElementById('l-wake-time').addEventListener('change', calcSleep);
+document.getElementById('l-lights-out').addEventListener('change',calcSleep);
+document.getElementById('l-wake-time').addEventListener('change',calcSleep);
 calcSleep();
 
-// ── EVENING STATE ─────────────────────────────────────────────────
-let eveDayType = 'Weekday', learnType = null;
-const eveMetrics = { focus: null, mood: null, energy: null };
+// ── EVENING STATE ─────────────────────────────────────────
+let eveDayType='Weekday', learnType=null;
+let wkndAftCat=null, wkndEveCat=null;
+const eveMetrics={focus:null,mood:null,energy:null};
 
-function setEveDay(type, el) {
-  eveDayType = type;
-  document.querySelectorAll('#e-day-pills .pill').forEach(p => p.classList.remove('on'));
+function setEveDay(t,el){
+  eveDayType=t;
+  document.querySelectorAll('#e-day-pills .pill').forEach(p=>p.classList.remove('on'));
   el.classList.add('on');
-  document.getElementById('e-weekday-section').style.display = type === 'Weekday' ? 'block' : 'none';
-  document.getElementById('e-weekend-section').style.display = type === 'Weekend' ? 'block' : 'none';
+  document.getElementById('e-weekday-section').style.display=t==='Weekday'?'block':'none';
+  document.getElementById('e-weekend-section').style.display=t==='Weekend'?'block':'none';
 }
-function setLearn(type, el) {
-  learnType = type;
-  document.querySelectorAll('#e-learn-pills .pill').forEach(p => p.classList.remove('on'));
+function setLearn(t,el){learnType=t;document.querySelectorAll('#e-learn-pills .pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');}
+function setWkndPill(slot,cat,el){
+  if(slot==='aft') wkndAftCat=cat; else wkndEveCat=cat;
+  document.querySelectorAll('#e-wknd-'+slot+'-pills .pill').forEach(p=>p.classList.remove('on'));
   el.classList.add('on');
 }
-['focus','mood','energy'].forEach(m => {
-  const c = document.getElementById('e-' + m + '-stars');
-  for (let i = 1; i <= 5; i++) {
-    const btn = document.createElement('button');
-    btn.className = 'star'; btn.textContent = '★'; btn.dataset.val = i;
-    btn.addEventListener('click', () => {
-      eveMetrics[m] = i;
-      c.querySelectorAll('.star').forEach((b,idx) => b.classList.toggle('lit', idx < i));
-    });
+['focus','mood','energy'].forEach(m=>{
+  const c=document.getElementById('e-'+m+'-stars');
+  for(let i=1;i<=5;i++){
+    const btn=document.createElement('button');
+    btn.className='star';btn.textContent='★';btn.dataset.val=i;
+    btn.addEventListener('click',()=>{eveMetrics[m]=i;c.querySelectorAll('.star').forEach((b,idx)=>b.classList.toggle('lit',idx<i));});
     c.appendChild(btn);
   }
 });
 
-// ── WEEKLY STATE ──────────────────────────────────────────────────
-const wDomain = { investing: null, social: null, health: null };
-['investing','social','health'].forEach(d => {
-  const c = document.getElementById('w-stars-' + d);
-  for (let i = 1; i <= 5; i++) {
-    const btn = document.createElement('button');
-    btn.className = 'star'; btn.textContent = '★'; btn.dataset.val = i;
-    btn.addEventListener('click', () => {
-      wDomain[d] = i;
-      c.querySelectorAll('.star').forEach((b,idx) => b.classList.toggle('lit', idx < i));
-    });
+// ── WEEKLY STATE ──────────────────────────────────────────
+const wDomain={investing:null,social:null,health:null};
+['investing','social','health'].forEach(d=>{
+  const c=document.getElementById('w-stars-'+d);
+  for(let i=1;i<=5;i++){
+    const btn=document.createElement('button');
+    btn.className='star';btn.textContent='★';btn.dataset.val=i;
+    btn.addEventListener('click',()=>{wDomain[d]=i;c.querySelectorAll('.star').forEach((b,idx)=>b.classList.toggle('lit',idx<i));});
     c.appendChild(btn);
   }
 });
 
-// ── AI ────────────────────────────────────────────────────────────
-async function callClaude(prompt) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST', headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{role:'user', content: prompt}] })
+async function loadWeeklySummary(){
+  if(!accessToken) return;
+  const rows=await getSheetData(); if(!rows||rows.length<2) return;
+  const weekRows=rows.slice(1).filter(r=>{
+    const d=new Date(r[C.date]);
+    return d>=sun&&d<=sat&&r[C.date];
   });
-  const data = await res.json();
-  return data.content?.find(b => b.type === 'text')?.text || '';
+  if(!weekRows.length) return;
+  const sleepVals=weekRows.map(r=>parseFloat(r[C.sleepDuration])).filter(v=>!isNaN(v));
+  const habitVals=weekRows.map(r=>parseFloat(r[C.habitPct])).filter(v=>!isNaN(v));
+  const wbVals=weekRows.map(r=>parseFloat(r[C.wellbeingAvg])).filter(v=>!isNaN(v));
+  const learnDays=weekRows.filter(r=>r[C.learnActivity]&&r[C.learnActivity]!=='None').length;
+  const avg=arr=>arr.length?(arr.reduce((a,b)=>a+b,0)/arr.length):null;
+  const sa=avg(sleepVals); const ha=avg(habitVals); const wa=avg(wbVals);
+  document.getElementById('w-avg-sleep').textContent=sa?sa.toFixed(1)+'h':'—';
+  document.getElementById('w-avg-habit').textContent=ha?Math.round(ha)+'%':'—';
+  document.getElementById('w-avg-wellbeing').textContent=wa?wa.toFixed(1)+'/5':'—';
+  document.getElementById('w-learn-days').textContent=learnDays+'/'+weekRows.filter(r=>(r[C.dayType]||'Weekday')==='Weekday').length;
 }
 
-// ── SUBMIT LUNCH ──────────────────────────────────────────────────
-async function submitLunch() {
-  const btn  = document.getElementById('l-submit');
-  const note = document.getElementById('l-coach-note');
-  const lo   = document.getElementById('l-lights-out').value;
-  const wt   = document.getElementById('l-wake-time').value;
-  const hrs  = calcSleep();
-  const dw   = document.getElementById('l-deep-work').value.trim();
-  const intent = document.getElementById('l-intention').value.trim();
+// ── AI ────────────────────────────────────────────────────
+async function callClaude(prompt){
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+  });
+  const d=await res.json(); return d.content?.find(b=>b.type==='text')?.text||'';
+}
 
-  btn.textContent = 'Saving...'; btn.disabled = true;
-  note.style.display = 'block'; note.textContent = '...';
-
-  const updates = {
-    [COL.dayType]:      '',
-    [COL.wakeTime]:     wt,
-    [COL.lightsOut]:    lo,
-    [COL.sleepDuration]: hrs ?? '',
-    [COL.wakeup]:       blockScores['l-wakeup'] ?? '',
-    [COL.morning]:      blockScores['l-morning'] ?? '',
-    [COL.lunch]:        blockScores['l-lunch'] ?? '',
-    [COL.deepWork]:     dw,
+// ── SUBMIT LUNCH ──────────────────────────────────────────
+async function submitLunch(){
+  const btn=document.getElementById('l-submit'),note=document.getElementById('l-coach-note');
+  const lo=document.getElementById('l-lights-out').value;
+  const wt=document.getElementById('l-wake-time').value;
+  const hrs=calcSleep();
+  const dw=document.getElementById('l-deep-work').value.trim();
+  const intent=document.getElementById('l-intention').value.trim();
+  btn.textContent='Saving...';btn.disabled=true;
+  note.style.display='block';note.textContent='...';
+  const updates={
+    [C.wakeTime]:wt,[C.lightsOut]:lo,[C.sleepDuration]:hrs??'',
+    [C.wakeup]:blockScores['l-wakeup']??'',[C.morning]:blockScores['l-morning']??'',
+    [C.lunch]:blockScores['l-lunch']??'',[C.deepWork]:dw
   };
-
-  const saved = await upsertRow(updates);
-  showSaveStatus('l-save-status', saved.ok, saved.msg);
-
-  const wakeup  = blockScores['l-wakeup'];
-  const morning = blockScores['l-morning'];
-  const lunch   = blockScores['l-lunch'];
-  const total   = [wakeup, morning, lunch].filter(v => v !== null).reduce((a,b) => a+b, 0);
-
-  try {
-    const text = await callClaude(`You are a brief, warm performance coach reviewing someone's morning data. Give a 2-3 sentence coach note — specific, honest, and forward-looking toward their afternoon. No fluff, no lists.
+  const saved=await upsertRow(updates);
+  showSaveStatus('l-save-status',saved.ok,saved.msg);
+  const total=[blockScores['l-wakeup'],blockScores['l-morning'],blockScores['l-lunch']].filter(v=>v!==null).reduce((a,b)=>a+b,0);
+  try{
+    const text=await callClaude(`You are a brief, warm performance coach. Give a 2-3 sentence coach note — specific, honest, forward-looking. No fluff.
 Sleep: lights out ${lo}, wake ${wt}, ${hrs}h (target 7.5h)
-Wake-up block (run/stretch/meditate): ${wakeup ?? 'unscored'}/2
-Morning block (agenda/deep work/no media): ${morning ?? 'unscored'}/2
-Lunch block (journal/meditate/walk): ${lunch ?? 'unscored'}/2
-Morning total: ${total}/6
-Deep work: ${dw || 'not noted'}
-Afternoon intention: ${intent || 'not noted'}`);
-    note.textContent = text || 'Could not generate note.';
-  } catch(e) { note.textContent = 'Saved to sheet. Could not reach AI.'; }
-
-  btn.textContent = 'Logged ✓'; btn.style.color = 'var(--success)'; btn.disabled = false;
+Wake-up (run/stretch/meditate): ${blockScores['l-wakeup']??'unscored'}/2
+Morning (agenda/deep work/no media): ${blockScores['l-morning']??'unscored'}/2
+Lunch (journal/meditate/walk): ${blockScores['l-lunch']??'unscored'}/2
+Morning total: ${total}/6 | Deep work: ${dw||'not noted'} | Afternoon intention: ${intent||'not noted'}`);
+    note.textContent=text||'Could not generate note.';
+  }catch(e){note.textContent='Saved. Could not reach AI.';}
+  btn.textContent='Logged ✓';btn.style.color='var(--success)';btn.disabled=false;
 }
 
-// ── SUBMIT EVENING ────────────────────────────────────────────────
-async function submitEvening() {
-  const btn    = document.getElementById('e-submit');
-  const note   = document.getElementById('e-coach-note');
-  const detail = document.getElementById('e-learn-detail').value.trim();
+// ── SUBMIT EVENING ────────────────────────────────────────
+async function submitEvening(){
+  const btn=document.getElementById('e-submit'),note=document.getElementById('e-coach-note');
+  const detail=document.getElementById('e-learn-detail').value.trim();
+  const isWknd=eveDayType==='Weekend';
+  btn.textContent='Saving...';btn.disabled=true;
+  note.style.display='block';note.textContent='...';
 
-  btn.textContent = 'Saving...'; btn.disabled = true;
-  note.style.display = 'block'; note.textContent = '...';
+  let learnStr='';
+  if(!isWknd && learnType) learnStr=learnType+(detail?' — '+detail:'');
 
-  const isWeekend = eveDayType === 'Weekend';
-  const updates = {
-    [COL.dayType]:     eveDayType,
-    [COL.afternoon]:   isWeekend ? '' : (blockScores['e-afternoon'] ?? ''),
-    [COL.dinner]:      isWeekend ? '' : (blockScores['e-dinner'] ?? ''),
-    [COL.winddown]:    isWeekend ? '' : (blockScores['e-winddown'] ?? ''),
-    [COL.weekend]:     isWeekend ? (blockScores['e-weekend'] ?? '') : '',
-    [COL.learnType]:   learnType || '',
-    [COL.learnDetail]: detail,
-    [COL.focus]:       eveMetrics.focus ?? '',
-    [COL.mood]:        eveMetrics.mood ?? '',
-    [COL.energy]:      eveMetrics.energy ?? '',
+  const wkndAftDetail=document.getElementById('e-wknd-aft-detail').value.trim();
+  const wkndEveDetail=document.getElementById('e-wknd-eve-detail').value.trim();
+  const wkndAftStr=wkndAftCat?(wkndAftCat+(wkndAftDetail?' — '+wkndAftDetail:'')):'';
+  const wkndEveStr=wkndEveCat?(wkndEveCat+(wkndEveDetail?' — '+wkndEveDetail:'')):'';
+
+  const updates={
+    [C.dayType]:eveDayType,
+    [C.afternoon]:isWknd?'':(blockScores['e-afternoon']??''),
+    [C.dinner]:isWknd?'':(blockScores['e-dinner']??''),
+    [C.winddown]:isWknd?'':(blockScores['e-winddown']??''),
+    [C.wkndAft]:isWknd?wkndAftStr:'',
+    [C.wkndEve]:isWknd?wkndEveStr:'',
+    [C.learnActivity]:learnStr,
+    [C.focus]:eveMetrics.focus??'',[C.mood]:eveMetrics.mood??'',[C.energy]:eveMetrics.energy??''
   };
+  const saved=await upsertRow(updates);
+  showSaveStatus('e-save-status',saved.ok,saved.msg);
 
-  const saved = await upsertRow(updates);
-  showSaveStatus('e-save-status', saved.ok, saved.msg);
-
-  const rel   = isWeekend
-    ? [blockScores['e-weekend']]
-    : [blockScores['e-afternoon'], blockScores['e-dinner'], blockScores['e-winddown']];
-  const total = rel.filter(v => v !== null).reduce((a,b) => a+b, 0);
-  const max   = isWeekend ? 2 : 6;
-  const blockStr  = isWeekend
-    ? `weekend: ${blockScores['e-weekend'] ?? 'unscored'}/2`
-    : `afternoon: ${blockScores['e-afternoon'] ?? 'unscored'}/2, dinner: ${blockScores['e-dinner'] ?? 'unscored'}/2, winddown: ${blockScores['e-winddown'] ?? 'unscored'}/2`;
-  const metricStr = Object.entries(eveMetrics).map(([k,v]) => `${k}: ${v ?? 'unscored'}/5`).join(', ');
-
-  try {
-    const text = await callClaude(`You are a concise, insightful performance coach. The user is a high-achieving equity analyst. Write a 3-sentence day summary: one on what today's data suggests, one on a connection worth noting, one forward-looking for tomorrow. Specific and direct.
-Day type: ${eveDayType}
-Block scores: ${blockStr} (${total}/${max})
-Learning: ${learnType || 'not logged'} — ${detail || 'no detail'}
-Daily scores: ${metricStr}`);
-    note.textContent = text || 'Could not generate summary.';
-  } catch(e) { note.textContent = 'Saved to sheet. Could not reach AI.'; }
-
-  btn.textContent = 'Logged ✓'; btn.style.color = 'var(--success)'; btn.disabled = false;
+  const rel=isWknd?[blockScores['e-weekend']]:[blockScores['e-afternoon'],blockScores['e-dinner'],blockScores['e-winddown']];
+  const total=rel.filter(v=>v!==null).reduce((a,b)=>a+b,0);
+  const metricStr=Object.entries(eveMetrics).map(([k,v])=>`${k}: ${v??'unscored'}/5`).join(', ');
+  try{
+    const text=await callClaude(`You are a concise, insightful performance coach for a high-achieving equity analyst. Write a 3-sentence day summary: what today's data suggests, one connection worth noting, one thing for tomorrow. Specific and direct.
+Day: ${eveDayType} | Blocks: ${isWknd?'weekend — '+wkndAftStr+' / '+wkndEveStr:'afternoon '+blockScores['e-afternoon']+'/2, dinner '+blockScores['e-dinner']+'/2, winddown '+blockScores['e-winddown']+'/2'} | Learning: ${learnStr||'none'} | Scores: ${metricStr}`);
+    note.textContent=text||'Could not generate summary.';
+  }catch(e){note.textContent='Saved. Could not reach AI.';}
+  btn.textContent='Logged ✓';btn.style.color='var(--success)';btn.disabled=false;
 }
 
-// ── SUBMIT WEEKLY ─────────────────────────────────────────────────
-async function submitWeekly() {
-  const btn = document.getElementById('w-submit');
-  const box = document.getElementById('w-insight-box');
-  btn.textContent = 'Generating...'; btn.disabled = true;
-  box.style.display = 'block';
-  ['pattern','bright','focus'].forEach(k => document.getElementById('w-ins-' + k).textContent = '...');
+// ── SUBMIT WEEKLY ─────────────────────────────────────────
+async function submitWeekly(){
+  const btn=document.getElementById('w-submit'),box=document.getElementById('w-insight-box');
+  btn.textContent='Generating...';btn.disabled=true;
+  box.style.display='block';
+  ['pattern','bright','focus'].forEach(k=>document.getElementById('w-ins-'+k).textContent='...');
+  const sleep=document.getElementById('w-avg-sleep').textContent;
+  const habit=document.getElementById('w-avg-habit').textContent;
+  const wb=document.getElementById('w-avg-wellbeing').textContent;
+  const learn=document.getElementById('w-learn-days').textContent;
+  const friction=document.getElementById('w-friction').value.trim();
+  const adjustment=document.getElementById('w-adjustment').value.trim();
+  try{
+    const raw=await callClaude(`Sharp, direct performance coach doing a weekly review with a high-achieving equity analyst. Goal: become a great investor, build excellent health and life habits.
+Generate 3 JSON insights: "pattern","bright","focus". Each 1-2 sentences. Data-grounded, honest, no cheerleading.
+Avg sleep: ${sleep} | Habit %: ${habit} | Wellbeing avg: ${wb} | Learning days: ${learn}
+Investing: ${wDomain.investing??'unrated'}/5 | Social/dating: ${wDomain.social??'unrated'}/5 | Health: ${wDomain.health??'unrated'}/5
+Friction: ${friction||'not specified'} | Adjustment: ${adjustment||'not specified'}
+Return ONLY valid JSON. Example: {"pattern":"...","bright":"...","focus":"..."}`);
+    const p=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    document.getElementById('w-ins-pattern').textContent=p.pattern||'—';
+    document.getElementById('w-ins-bright').textContent=p.bright||'—';
+    document.getElementById('w-ins-focus').textContent=p.focus||'—';
+  }catch(e){document.getElementById('w-ins-pattern').textContent='Could not generate insights.';}
+  btn.textContent='Review complete ✓';btn.style.color='var(--success)';btn.disabled=false;
+}
 
-  const vals = {
-    sleep: document.getElementById('w-sleep').value,
-    blocks: document.getElementById('w-blocks').value,
-    focus: document.getElementById('w-focus').value,
-    mood: document.getElementById('w-mood').value,
-    energy: document.getElementById('w-energy').value,
-    learn: document.getElementById('w-learn').value,
-    friction: document.getElementById('w-friction').value.trim(),
-    adjustment: document.getElementById('w-adjustment').value.trim()
-  };
+// ── TRENDS ────────────────────────────────────────────────
+let trendsLoaded=false;
+async function loadTrends(){
+  if(!accessToken){document.getElementById('trends-loading').textContent='Sign in to load your data.';return;}
+  if(trendsLoaded) return;
+  document.getElementById('trends-loading').textContent='Loading...';
+  const rows=await getSheetData();
+  if(!rows||rows.length<2){document.getElementById('trends-loading').textContent='No data yet. Start logging!';return;}
 
-  try {
-    const raw = await callClaude(`You are a sharp, direct performance coach doing a weekly review with a high-achieving equity analyst tracking daily habits. His goal: become a great investor while building excellent health and life habits.
+  // Get last 30 days of data rows
+  const cutoff=new Date(now); cutoff.setDate(now.getDate()-29);
+  const dataRows=rows.slice(1).filter(r=>r[C.date]&&new Date(r[C.date])>=cutoff).sort((a,b)=>a[C.date]<b[C.date]?-1:1);
 
-Generate exactly 3 insights as JSON: "pattern", "bright", "focus". Each 1-2 sentences. Data-grounded and honest — no cheerleading.
+  document.getElementById('trends-loading').style.display='none';
+  document.getElementById('trends-content').style.display='block';
 
-Avg sleep: ${vals.sleep || 'not provided'}
-Avg block score: ${vals.blocks || 'not provided'}
-Avg focus/mood/energy: ${vals.focus || '—'} / ${vals.mood || '—'} / ${vals.energy || '—'}
-Learning days: ${vals.learn || 'not provided'}
-Investing output: ${wDomain.investing ?? 'unrated'}/5 | Social/dating: ${wDomain.social ?? 'unrated'}/5 | Health: ${wDomain.health ?? 'unrated'}/5
-Main friction: ${vals.friction || 'not specified'}
-Planned adjustment: ${vals.adjustment || 'not specified'}
+  buildCalendar(dataRows);
+  buildDualChart(dataRows);
+  buildBlockBars(dataRows);
+  buildSleepChart(dataRows);
+  buildLearnLog(rows.slice(1));
+  trendsLoaded=true;
+}
 
-Return ONLY valid JSON, no markdown. Example: {"pattern":"...","bright":"...","focus":"..."}`);
+function scoreColor(val){
+  if(val===null||val===''||isNaN(val)) return 'var(--score-blank)';
+  const v=parseInt(val);
+  if(v===0) return 'var(--score-0)';
+  if(v===1) return 'var(--score-1)';
+  return 'var(--score-2)';
+}
 
-    const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
-    document.getElementById('w-ins-pattern').textContent = parsed.pattern || '—';
-    document.getElementById('w-ins-bright').textContent  = parsed.bright  || '—';
-    document.getElementById('w-ins-focus').textContent   = parsed.focus   || '—';
-  } catch(e) {
-    document.getElementById('w-ins-pattern').textContent = 'Could not generate insights.';
-    document.getElementById('w-ins-bright').textContent  = '';
-    document.getElementById('w-ins-focus').textContent   = '';
+function buildCalendar(dataRows){
+  const rowMap={};
+  dataRows.forEach(r=>{rowMap[r[C.date]]=r;});
+
+  // DOW headers
+  const dowEl=document.getElementById('cal-dow-row');
+  dowEl.innerHTML='';
+  ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d=>{
+    const el=document.createElement('div');
+    el.className='cal-dow'; el.textContent=d; dowEl.appendChild(el);
+  });
+
+  const grid=document.getElementById('cal-grid');
+  grid.innerHTML='';
+
+  // Build 30-day window
+  const start=new Date(now); start.setDate(now.getDate()-29);
+  const startDow=start.getDay();
+  // Pad empty cells
+  for(let i=0;i<startDow;i++){
+    const empty=document.createElement('div'); empty.className='cal-day empty'; grid.appendChild(empty);
   }
-  btn.textContent = 'Review complete ✓'; btn.style.color = 'var(--success)'; btn.disabled = false;
+
+  for(let i=0;i<30;i++){
+    const d=new Date(start); d.setDate(start.getDate()+i);
+    const iso=d.toISOString().split('T')[0];
+    const row=rowMap[iso]||null;
+    const isWknd=row&&(row[C.dayType]||'').toLowerCase()==='weekend';
+    const blockCols=isWknd?BLOCK_COLS_WEEKEND:BLOCK_COLS_WEEKDAY;
+
+    const cell=document.createElement('div'); cell.className='cal-day';
+    const dateNum=document.createElement('div'); dateNum.className='cal-date-num'; dateNum.textContent=d.getDate();
+    cell.appendChild(dateNum);
+
+    const dots=document.createElement('div'); dots.className='block-dots';
+    blockCols.forEach(bc=>{
+      const dot=document.createElement('div'); dot.className='block-dot';
+      dot.style.background=row?scoreColor(row[bc]):'var(--score-blank)';
+      dots.appendChild(dot);
+    });
+    cell.appendChild(dots);
+
+    if(row){
+      cell.addEventListener('mouseenter',e=>showTooltip(e,row,iso));
+      cell.addEventListener('mouseleave',()=>hideTooltip());
+      cell.addEventListener('click',e=>showTooltip(e,row,iso));
+    }
+    grid.appendChild(cell);
+  }
+}
+
+function showTooltip(e,row,iso){
+  const t=document.getElementById('cal-tooltip');
+  const isWknd=(row[C.dayType]||'').toLowerCase()==='weekend';
+  const blockCols=isWknd?BLOCK_COLS_WEEKEND:BLOCK_COLS_WEEKDAY;
+  const blockNames=isWknd?['Wake-up','Morning','Lunch']:BLOCK_NAMES;
+  const d=new Date(iso);
+  let html=`<div class="cal-tooltip-title">${MONTHS[d.getMonth()]} ${d.getDate()}</div>`;
+  blockNames.forEach((name,i)=>{
+    const v=row[blockCols[i]];
+    html+=`<div class="cal-tooltip-row"><span>${name}</span><span class="cal-tooltip-val">${v!==''&&v!==undefined?v+'/2':'—'}</span></div>`;
+  });
+  const sleep=row[C.sleepDuration];
+  if(sleep) html+=`<div class="cal-tooltip-row"><span>Sleep</span><span class="cal-tooltip-val">${sleep}h</span></div>`;
+  const hp=row[C.habitPct]; const wb=row[C.wellbeingAvg];
+  if(hp) html+=`<div class="cal-tooltip-row"><span>Habit %</span><span class="cal-tooltip-val">${hp}</span></div>`;
+  if(wb) html+=`<div class="cal-tooltip-row"><span>Wellbeing</span><span class="cal-tooltip-val">${wb}/5</span></div>`;
+  const learn=row[C.learnActivity];
+  if(learn&&learn!=='None') html+=`<div style="margin-top:6px;font-size:11px;color:var(--text-muted)">${learn}</div>`;
+  t.innerHTML=html;
+  const rect=e.target.getBoundingClientRect();
+  t.style.display='block';
+  t.style.left=Math.min(rect.right+6,window.innerWidth-230)+'px';
+  t.style.top=Math.max(rect.top-10,8)+'px';
+}
+function hideTooltip(){document.getElementById('cal-tooltip').style.display='none';}
+
+function buildDualChart(dataRows){
+  const canvas=document.getElementById('dual-chart');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.offsetWidth||340, H=160;
+  canvas.width=W*2; canvas.height=H*2; ctx.scale(2,2);
+
+  const labels=[],habitPcts=[],wbAvgs=[];
+  dataRows.forEach(r=>{
+    const d=new Date(r[C.date]);
+    labels.push(MONTHS[d.getMonth()]+' '+d.getDate());
+    const hp=parseFloat(r[C.habitPct]); habitPcts.push(isNaN(hp)?null:hp);
+    const wb=parseFloat(r[C.wellbeingAvg]); wbAvgs.push(isNaN(wb)?null:wb*20); // scale to 0-100
+  });
+
+  const pad={t:10,r:10,b:28,l:32};
+  const cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
+
+  ctx.clearRect(0,0,W,H);
+  // grid lines
+  ctx.strokeStyle='rgba(0,0,0,0.06)'; ctx.lineWidth=0.5;
+  [0,25,50,75,100].forEach(y=>{
+    const py=pad.t+ch*(1-y/100);
+    ctx.beginPath();ctx.moveTo(pad.l,py);ctx.lineTo(pad.l+cw,py);ctx.stroke();
+    ctx.fillStyle='rgba(0,0,0,0.3)';ctx.font='9px system-ui';ctx.textAlign='right';
+    ctx.fillText(y+'%',pad.l-3,py+3);
+  });
+
+  function drawLine(data,color){
+    ctx.strokeStyle=color; ctx.lineWidth=1.5; ctx.lineJoin='round';
+    ctx.beginPath(); let started=false;
+    data.forEach((v,i)=>{
+      if(v===null) return;
+      const x=pad.l+(i/(data.length-1||1))*cw;
+      const y=pad.t+ch*(1-v/100);
+      if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    // dots
+    data.forEach((v,i)=>{
+      if(v===null) return;
+      const x=pad.l+(i/(data.length-1||1))*cw;
+      const y=pad.t+ch*(1-v/100);
+      ctx.beginPath();ctx.arc(x,y,2.5,0,Math.PI*2);
+      ctx.fillStyle=color;ctx.fill();
+    });
+  }
+
+  drawLine(habitPcts,'#639922');
+  drawLine(wbAvgs,'#BA7517');
+
+  // x labels (show every ~5)
+  ctx.fillStyle='rgba(0,0,0,0.4)';ctx.font='9px system-ui';ctx.textAlign='center';
+  const step=Math.ceil(labels.length/6);
+  labels.forEach((l,i)=>{
+    if(i%step!==0&&i!==labels.length-1) return;
+    const x=pad.l+(i/(labels.length-1||1))*cw;
+    ctx.fillText(l,x,H-6);
+  });
+
+  // legend
+  ctx.fillStyle='#639922';ctx.fillRect(pad.l,4,10,3);
+  ctx.fillStyle='rgba(0,0,0,0.5)';ctx.font='9px system-ui';ctx.textAlign='left';ctx.fillText('Habit %',pad.l+13,7);
+  ctx.fillStyle='#BA7517';ctx.fillRect(pad.l+60,4,10,3);
+  ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillText('Wellbeing (scaled)',pad.l+73,7);
+}
+
+function buildBlockBars(dataRows){
+  const weekdayRows=dataRows.filter(r=>(r[C.dayType]||'Weekday').toLowerCase()!=='weekend');
+  const wrap=document.getElementById('block-bars'); wrap.innerHTML='';
+  BLOCK_NAMES.forEach((name,i)=>{
+    const col=BLOCK_COLS_WEEKDAY[i];
+    const vals=weekdayRows.map(r=>parseFloat(r[col])).filter(v=>!isNaN(v));
+    const avg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;
+    const pct=(avg/2)*100;
+    const row=document.createElement('div'); row.className='block-bar-row';
+    row.innerHTML=`<div class="block-bar-label">${name}</div><div class="block-bar-track"><div class="block-bar-fill" style="width:${pct}%;background:${pct>=75?'var(--green-border)':pct>=40?'var(--amber-border)':'var(--red-border)'}"></div></div><div class="block-bar-pct">${avg.toFixed(1)}/2</div>`;
+    wrap.appendChild(row);
+  });
+}
+
+function buildSleepChart(dataRows){
+  const canvas=document.getElementById('sleep-chart');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.offsetWidth||340, H=120;
+  canvas.width=W*2; canvas.height=H*2; ctx.scale(2,2);
+
+  const sleepData=dataRows.map(r=>({date:r[C.date],val:parseFloat(r[C.sleepDuration])||null}));
+  const pad={t:10,r:10,b:24,l:28};
+  const cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
+  const maxH=10, minH=4;
+
+  ctx.clearRect(0,0,W,H);
+  // grid
+  [4,5,6,7,8,9].forEach(h=>{
+    const py=pad.t+ch*(1-(h-minH)/(maxH-minH));
+    ctx.strokeStyle='rgba(0,0,0,0.06)';ctx.lineWidth=0.5;
+    ctx.beginPath();ctx.moveTo(pad.l,py);ctx.lineTo(pad.l+cw,py);ctx.stroke();
+    ctx.fillStyle='rgba(0,0,0,0.3)';ctx.font='9px system-ui';ctx.textAlign='right';
+    ctx.fillText(h,pad.l-3,py+3);
+  });
+  // target line
+  const targetY=pad.t+ch*(1-(7.5-minH)/(maxH-minH));
+  ctx.setLineDash([3,3]);ctx.strokeStyle='rgba(100,150,100,0.5)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(pad.l,targetY);ctx.lineTo(pad.l+cw,targetY);ctx.stroke();
+  ctx.setLineDash([]);
+
+  // bars
+  const n=sleepData.length;
+  const bw=Math.max(2,(cw/n)-2);
+  sleepData.forEach((s,i)=>{
+    if(!s.val) return;
+    const x=pad.l+(i/(n-1||1))*cw-bw/2;
+    const h=Math.min(Math.max(s.val,minH),maxH);
+    const barH=ch*(h-minH)/(maxH-minH);
+    const y=pad.t+ch-barH;
+    ctx.fillStyle=s.val>=7?'#639922':s.val>=6?'#BA7517':'#E24B4A';
+    ctx.beginPath();
+    ctx.roundRect(x,y,bw,barH,2);
+    ctx.fill();
+  });
+
+  // x labels
+  ctx.fillStyle='rgba(0,0,0,0.4)';ctx.font='9px system-ui';ctx.textAlign='center';
+  const step=Math.ceil(n/6);
+  sleepData.forEach((s,i)=>{
+    if(i%step!==0&&i!==n-1) return;
+    const d=new Date(s.date);
+    const x=pad.l+(i/(n-1||1))*cw;
+    ctx.fillText(MONTHS[d.getMonth()]+' '+d.getDate(),x,H-4);
+  });
+}
+
+function buildLearnLog(allRows){
+  const wrap=document.getElementById('learn-log'); wrap.innerHTML='';
+  const recent=allRows.filter(r=>r[C.learnActivity]&&r[C.learnActivity]!=='None'&&r[C.date])
+    .sort((a,b)=>a[C.date]<b[C.date]?1:-1).slice(0,14);
+  if(!recent.length){
+    const el=document.createElement('div');el.className='learn-log-none';el.textContent='No learning activity logged yet.';wrap.appendChild(el);return;
+  }
+  recent.forEach(r=>{
+    const d=new Date(r[C.date]);
+    const row=document.createElement('div');row.className='learn-log-row';
+    row.innerHTML=`<div class="learn-log-date">${MONTHS[d.getMonth()]} ${d.getDate()}</div><div class="learn-log-entry">${r[C.learnActivity]}</div>`;
+    wrap.appendChild(row);
+  });
 }
 </script>
 </body>
