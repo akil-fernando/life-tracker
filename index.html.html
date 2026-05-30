@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Tracker</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f9f8f6; --surface: #ffffff; --border: rgba(0,0,0,0.09); --border-mid: rgba(0,0,0,0.15);
+  --text-primary: #1a1a18; --text-secondary: #5a5a56; --text-muted: #9a9a94;
+  --radius: 12px; --radius-sm: 8px;
+  --green-bg: #EAF3DE; --green-border: #639922; --green-text: #3B6D11;
+  --amber-bg: #FAEEDA; --amber-border: #BA7517; --amber-text: #854F0B;
+  --red-bg: #FCEBEB; --red-border: #E24B4A; --red-text: #A32D2D;
+  --star-lit: #BA7517; --success: #3B6D11; --danger: #A32D2D;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1a18; --surface: #242420; --border: rgba(255,255,255,0.09); --border-mid: rgba(255,255,255,0.18);
+    --text-primary: #f0efe8; --text-secondary: #a0a09a; --text-muted: #606058;
+    --green-bg: #173404; --green-border: #639922; --green-text: #C0DD97;
+    --amber-bg: #412402; --amber-border: #BA7517; --amber-text: #FAC775;
+    --red-bg: #501313; --red-border: #E24B4A; --red-text: #F7C1C1;
+    --star-lit: #FAC775; --success: #C0DD97; --danger: #F7C1C1;
+  }
+}
+body { background: var(--bg); color: var(--text-primary); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+/* NAV */
+.nav { display: flex; background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.nav-btn { flex: 1; padding: 14px 8px 12px; border: none; background: transparent; font-size: 12px; font-weight: 500; color: var(--text-muted); cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; border-bottom: 2px solid transparent; transition: all 0.15s; }
+.nav-btn.active { color: var(--text-primary); border-bottom-color: var(--text-primary); }
+
+/* AUTH BAR */
+.auth-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 1.25rem; background: var(--surface); border-bottom: 0.5px solid var(--border); font-size: 13px; }
+.auth-status { display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
+.auth-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border-mid); flex-shrink: 0; }
+.auth-dot.connected { background: var(--green-border); }
+.auth-btn { padding: 5px 12px; border-radius: 99px; border: 0.5px solid var(--border-mid); background: transparent; font-size: 12px; color: var(--text-secondary); cursor: pointer; transition: all 0.12s; }
+.auth-btn:hover { background: var(--bg); }
+
+/* PAGES */
+.page { display: none; padding: 1.5rem 1rem 4rem; max-width: 480px; margin: 0 auto; }
+.page.active { display: block; }
+
+.heading { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+.subdate { font-size: 13px; color: var(--text-muted); margin-bottom: 1.75rem; }
+.section { margin-bottom: 1.5rem; }
+.label { font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+.hint { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+
+.card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 0.5px solid var(--border); }
+.row:last-child { border-bottom: none; padding-bottom: 0; }
+.row:first-child { padding-top: 0; }
+.row-left { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.row-name { font-size: 14px; font-weight: 500; color: var(--text-primary); display: flex; align-items: center; gap: 7px; }
+.row-name i { font-size: 15px; color: var(--text-muted); }
+.row-tasks { font-size: 12px; color: var(--text-muted); padding-left: 22px; }
+
+.time-input { font-size: 15px; font-weight: 500; border: none; background: transparent; color: var(--text-primary); text-align: right; width: 90px; outline: none; cursor: pointer; }
+
+.sleep-stats { display: flex; gap: 8px; margin-top: 10px; }
+.sleep-stat { flex: 1; background: var(--bg); border-radius: var(--radius-sm); padding: 10px 12px; text-align: center; }
+.sleep-stat-val { font-size: 20px; font-weight: 500; color: var(--text-primary); }
+.sleep-stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+.score-group { display: flex; gap: 5px; flex-shrink: 0; }
+.score-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.score-btn { width: 38px; height: 38px; border-radius: var(--radius-sm); border: 0.5px solid var(--border-mid); background: transparent; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all 0.12s; }
+.score-btn:hover { background: var(--bg); }
+.score-btn.s0 { background: var(--red-bg); border-color: var(--red-border); color: var(--red-text); }
+.score-btn.s1 { background: var(--amber-bg); border-color: var(--amber-border); color: var(--amber-text); }
+.score-btn.s2 { background: var(--green-bg); border-color: var(--green-border); color: var(--green-text); }
+.score-lbl { font-size: 10px; color: var(--text-muted); }
+
+.pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { padding: 6px 13px; border-radius: 99px; border: 0.5px solid var(--border-mid); background: transparent; font-size: 13px; color: var(--text-secondary); cursor: pointer; transition: all 0.12s; }
+.pill.on { background: var(--surface); border-color: var(--text-secondary); color: var(--text-primary); font-weight: 500; box-shadow: 0 0 0 1px var(--border-mid); }
+
+textarea { width: 100%; border: none; background: transparent; font-size: 14px; color: var(--text-primary); resize: none; outline: none; font-family: inherit; line-height: 1.6; padding: 0; min-height: 48px; }
+textarea::placeholder { color: var(--text-muted); }
+
+.star-row { display: flex; gap: 4px; flex-shrink: 0; }
+.star { width: 30px; height: 30px; border: none; background: transparent; font-size: 20px; cursor: pointer; color: var(--border-mid); padding: 0; line-height: 1; transition: color 0.1s; }
+.star.lit { color: var(--star-lit); }
+
+.submit-btn { width: 100%; padding: 13px; border-radius: var(--radius); border: 0.5px solid var(--border-mid); background: var(--surface); font-size: 15px; font-weight: 500; color: var(--text-primary); cursor: pointer; transition: all 0.12s; }
+.submit-btn:hover { background: var(--bg); }
+.submit-btn:active { transform: scale(0.98); }
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.coach-note { border-left: 2px solid var(--border-mid); padding: 1rem 1.25rem; font-size: 14px; color: var(--text-secondary); line-height: 1.7; display: none; margin-top: 1.25rem; }
+
+.save-status { font-size: 13px; color: var(--text-muted); text-align: center; margin-top: 10px; display: none; }
+.save-status.ok { color: var(--success); }
+.save-status.err { color: var(--danger); }
+
+/* Weekly */
+.data-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.data-row:last-child { margin-bottom: 0; }
+.data-lbl { font-size: 13px; color: var(--text-secondary); width: 130px; flex-shrink: 0; }
+.data-input { flex: 1; font-size: 13px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); padding: 6px 10px; background: var(--bg); color: var(--text-primary); outline: none; font-family: inherit; }
+.data-input:focus { border-color: var(--text-muted); }
+
+.insight-box { display: none; margin-top: 1.5rem; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.insight-block { padding: 1rem 1.25rem; border-bottom: 0.5px solid var(--border); }
+.insight-block:last-child { border-bottom: none; }
+.insight-block-label { font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+.insight-block-text { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+
+.weekend-hint { font-size: 12px; color: var(--text-muted); font-style: italic; padding-top: 6px; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="switchTab('lunch')">Lunch</button>
+  <button class="nav-btn" onclick="switchTab('evening')">Evening</button>
+  <button class="nav-btn" onclick="switchTab('weekly')">Weekly</button>
+</nav>
+
+<div class="auth-bar">
+  <div class="auth-status">
+    <div class="auth-dot" id="auth-dot"></div>
+    <span id="auth-label">Not connected to Sheets</span>
+  </div>
+  <button class="auth-btn" id="auth-btn" onclick="handleAuth()">Sign in</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     LUNCH PAGE
+═══════════════════════════════════════════════ -->
+<div class="page active" id="page-lunch">
+  <p class="heading">Lunch check-in</p>
+  <p class="subdate" id="lunch-date"></p>
+
+  <div class="section">
+    <div class="label">Sleep</div>
+    <div class="card">
+      <div class="row">
+        <span class="row-name"><i class="ti ti-moon"></i> Lights out</span>
+        <input type="time" class="time-input" id="l-lights-out" value="22:00">
+      </div>
+      <div class="row" style="border-bottom:none;">
+        <span class="row-name"><i class="ti ti-sun"></i> Wake time</span>
+        <input type="time" class="time-input" id="l-wake-time" value="05:45">
+      </div>
+      <div class="sleep-stats">
+        <div class="sleep-stat"><div class="sleep-stat-val" id="l-sleep-hrs">—</div><div class="sleep-stat-lbl">hours slept</div></div>
+        <div class="sleep-stat"><div class="sleep-stat-val" id="l-sleep-vs">—</div><div class="sleep-stat-lbl">vs. 7.5h target</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">Block scores</div>
+    <div class="card">
+      <div class="row">
+        <div class="row-left">
+          <span class="row-name"><i class="ti ti-sunrise"></i> Wake-up</span>
+          <span class="row-tasks">Run · stretch · meditate</span>
+        </div>
+        <div class="score-group" data-block="l-wakeup">
+          <div class="score-wrap"><button class="score-btn" data-val="0">0</button><span class="score-lbl">skip</span></div>
+          <div class="score-wrap"><button class="score-btn" data-val="1">1</button><span class="score-lbl">partial</span></div>
+          <div class="score-wrap"><button class="score-btn" data-val="2">2</button><span class="score-lbl">nailed</span></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-left">
+          <span class="row-name"><i class="ti ti-brain"></i> Morning</span>
+          <span class="row-tasks">Agenda · deep work · no media</span>
+        </div>
+        <div class="score-group" data-block="l-morning">
+          <div class="score-wrap"><button class="score-btn" data-val="0">0</button><span class="score-lbl">skip</span></div>
+          <div class="score-wrap"><button class="score-btn" data-val="1">1</button><span class="score-lbl">partial</span></div>
+          <div class="score-wrap"><button class="score-btn" data-val="2">2</button><span class="score-lbl">nailed</span></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-left">
+          <span class="row-name"><i class="ti ti-salad"></i> Lunch</span>
+          <span class="row-tasks">Journal · meditate · walk</span>
+        </div>
+        <div class="score-group" data-block="l-lunch">
+          <div class="score-wrap"><button class="score-btn" data-val="0">0</button><span class="score-lbl">skip</span></div>
+          <div class="score-wrap"><button class="score-btn" data-val="1">1</button><span class="score-lbl">partial</span></div>
+          <div class="score-wrap"><button class="score-btn" data-val="2">2</button><span class="score-lbl">nailed</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">Deep work this morning</div>
+    <div class="card"><textarea id="l-deep-work" placeholder="What did you work on?" rows="2"></textarea></div>
+  </div>
+
+  <div class="section">
+    <div class="label">Afternoon intention</div>
+    <div class="card"><textarea id="l-intention" placeholder="One thing to nail this afternoon..." rows="2"></textarea></div>
+  </div>
+
+  <button class="submit-btn" id="l-submit" onclick="submitLunch()">Log & get coach note →</button>
+  <div class="save-status" id="l-save-status"></div>
+  <div class="coach-note" id="l-coach-note"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     EVENING PAGE
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-evening">
+  <p class="heading">Evening check-in</p>
+  <p class="subdate" id="eve-date"></p>
+
+  <div class="section">
+    <div class="label">Day type</div>
+    <div class="pills" id="e-day-pills">
+      <button class="pill on" onclick="setEveDay('weekday',this)">Weekday</button>
+      <button class="pill" onclick="setEveDay('weekend',this)">Weekend</button>
+    </div>
+  </div>
+
+  <div id="e-weekday-section">
+    <div class="section">
+      <div class="label">Block scores</div>
+      <div class="card">
+        <div class="row">
+          <div class="row-left">
+            <span class="row-name"><i class="ti ti-building"></i> Afternoon</span>
+            <span class="row-tasks">Agenda · news · process work</span>
+          </div>
+          <div class="score-group" data-block="e-afternoon">
+            <div class="score-wrap"><button class="score-btn" data-val="0">0</button><span class="score-lbl">skip</span></div>
+            <div class="score-wrap"><button class="score-btn" data-val="1">1</button><span class="score-lbl">partial</span></div>
+            <div class="score-wrap"><button class="score-btn" data-val="2">2</button><span class="score-lbl">nailed</span></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-left">
+            <span class="row-name"><i class="ti ti-bowl"></i> Dinner</span>
+            <span class="row-tasks">Learning activity</span>
+          </div>
+          <div class="score-group" data-block="e-dinner">
+            <div class="score-wrap"><button class="score-btn" data-val="0">0</button><span class="score-lbl">skip</span></div>
+            <div class="score-wrap"><button class="score-btn" data-val="1">1</button><span class="score-lbl">partial</span></div>
+            <div class="score-wrap"><button class="score-btn" data-val="2">2</button><span class="score-lbl">nailed</span></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-left">
+            <span class="row-name"><i class="ti ti-moon"></i> Wind-down</span>
+            <span class="row-tasks">Journal · agenda · shower · stretch</span>
+          </div>
+          <div class="score-group" data-block="e-winddown">
+            <div class="score-wrap"><button class="score-btn" data-val="0">0</button><span class="score-lbl">skip</span></div>
+            <div class="score-wrap"><button class="score-btn" data-val="1">1</button><span class="score-lbl">partial</span></div>
+            <div class="score-wrap"><button class="score-btn" data-val="2">2</button><span class="score-lbl">nailed</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="e-weekend-section" style="display:none;">
+    <div class="section">
+      <div class="label">Weekend block</div>
+      <div class="card">
+        <div class="row">
+          <div class="row-left">
+            <span class="row-name"><i class="ti ti-friends"></i> Social / personal</span>
+          </div>
+          <div class="score-group" data-block="e-weekend">
+            <div class="score-wrap"><button class="score-btn" data-val="0">0</button><span class="score-lbl">skip</span></div>
+            <div class="score-wrap"><button class="score-btn" data-val="1">1</button><span class="score-lbl">partial</span></div>
+            <div class="score-wrap"><button class="score-btn" data-val="2">2</button><span class="score-lbl">nailed</span></div>
+          </div>
+        </div>
+        <p class="weekend-hint">Did you use your afternoon/evening intentionally — socially, for wellbeing, or something meaningful?</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">Learning activity</div>
+    <div class="card">
+      <div class="pills" id="e-learn-pills" style="margin-bottom:12px;">
+        <button class="pill" onclick="setLearn('Podcast',this)">Podcast</button>
+        <button class="pill" onclick="setLearn('Memo / pitch',this)">Memo / pitch</button>
+        <button class="pill" onclick="setLearn('HF letter',this)">HF letter</button>
+        <button class="pill" onclick="setLearn('Book',this)">Book</button>
+        <button class="pill" onclick="setLearn('Article',this)">Article</button>
+        <button class="pill" onclick="setLearn('None',this)">None today</button>
+      </div>
+      <textarea id="e-learn-detail" placeholder="Title or topic..." rows="1"></textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">Daily scores</div>
+    <div class="card">
+      <div class="row">
+        <span class="row-name"><i class="ti ti-bolt"></i> Focus</span>
+        <div class="star-row" id="e-focus-stars"></div>
+      </div>
+      <div class="row">
+        <span class="row-name"><i class="ti ti-heart"></i> Mood</span>
+        <div class="star-row" id="e-mood-stars"></div>
+      </div>
+      <div class="row">
+        <span class="row-name"><i class="ti ti-flame"></i> Energy</span>
+        <div class="star-row" id="e-energy-stars"></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="submit-btn" id="e-submit" onclick="submitEvening()">Log & get day summary →</button>
+  <div class="save-status" id="e-save-status"></div>
+  <div class="coach-note" id="e-coach-note"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     WEEKLY PAGE
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-weekly">
+  <p class="heading">Weekly review</p>
+  <p class="subdate" id="weekly-date"></p>
+
+  <div class="section">
+    <div class="label">Weekly averages from sheet</div>
+    <p class="hint">Pull these from your Life Tracker spreadsheet.</p>
+    <div class="card">
+      <div class="data-row"><span class="data-lbl">Avg sleep</span><input class="data-input" id="w-sleep" placeholder="e.g. 7.2h"></div>
+      <div class="data-row"><span class="data-lbl">Avg block score</span><input class="data-input" id="w-blocks" placeholder="e.g. 8.5 / 12"></div>
+      <div class="data-row"><span class="data-lbl">Avg focus</span><input class="data-input" id="w-focus" placeholder="e.g. 3.4 / 5"></div>
+      <div class="data-row"><span class="data-lbl">Avg mood</span><input class="data-input" id="w-mood" placeholder="e.g. 3.8 / 5"></div>
+      <div class="data-row"><span class="data-lbl">Avg energy</span><input class="data-input" id="w-energy" placeholder="e.g. 3.2 / 5"></div>
+      <div class="data-row"><span class="data-lbl">Learning days</span><input class="data-input" id="w-learn" placeholder="e.g. 4 / 5 weekdays"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">Domain self-ratings</div>
+    <div class="card">
+      <div class="row">
+        <span class="row-name"><i class="ti ti-chart-line"></i> Investing output</span>
+        <div class="star-row" id="w-stars-investing"></div>
+      </div>
+      <div class="row">
+        <span class="row-name"><i class="ti ti-users"></i> Social / dating</span>
+        <div class="star-row" id="w-stars-social"></div>
+      </div>
+      <div class="row">
+        <span class="row-name"><i class="ti ti-heartbeat"></i> Health overall</span>
+        <div class="star-row" id="w-stars-health"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">Main friction this week</div>
+    <div class="card"><textarea id="w-friction" placeholder="What got in the way most?" rows="3"></textarea></div>
+  </div>
+
+  <div class="section">
+    <div class="label">One adjustment for next week</div>
+    <div class="card"><textarea id="w-adjustment" placeholder="Specific and actionable..." rows="3"></textarea></div>
+  </div>
+
+  <button class="submit-btn" id="w-submit" onclick="submitWeekly()">Generate weekly insight →</button>
+
+  <div class="insight-box" id="w-insight-box">
+    <div class="insight-block"><div class="insight-block-label">Pattern</div><div class="insight-block-text" id="w-ins-pattern">...</div></div>
+    <div class="insight-block"><div class="insight-block-label">Bright spot</div><div class="insight-block-text" id="w-ins-bright">...</div></div>
+    <div class="insight-block"><div class="insight-block-label">Focus for next week</div><div class="insight-block-text" id="w-ins-focus">...</div></div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────
+const CLIENT_ID = '553850980545-ikp982o42obt65sp16hk9go8qm22er26.apps.googleusercontent.com';
+const SHEET_ID  = '1-c5M0J3ieK47k1WwuCApoMoJbO72bBb1pvwCuY5hnME';
+const SHEET_TAB = 'Sheet1';
+const SCOPES    = 'https://www.googleapis.com/auth/spreadsheets';
+
+// ─── DATE HELPERS ─────────────────────────────────────────
+const DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const now    = new Date();
+const dateStr = d => DAYS[d.getDay()] + ', ' + MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+const isoDate = d => d.toISOString().split('T')[0];
+
+document.getElementById('lunch-date').textContent  = dateStr(now);
+document.getElementById('eve-date').textContent    = dateStr(now);
+const sun = new Date(now); sun.setDate(now.getDate() - now.getDay());
+const sat = new Date(sun); sat.setDate(sun.getDate() + 6);
+document.getElementById('weekly-date').textContent = 'Week of ' + MONTHS[sun.getMonth()] + ' ' + sun.getDate() + ' – ' + MONTHS[sat.getMonth()] + ' ' + sat.getDate();
+
+// ─── TAB SWITCHING ────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.nav-btn').forEach((b,i) => b.classList.toggle('active', ['lunch','evening','weekly'][i] === tab));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+}
+
+// ─── GOOGLE AUTH ──────────────────────────────────────────
+let accessToken = null;
+let tokenClient = null;
+
+window.addEventListener('load', () => {
+  // Try to restore token from sessionStorage
+  const saved = sessionStorage.getItem('lt_token');
+  if (saved) { accessToken = saved; updateAuthUI(true); }
+});
+
+function initTokenClient() {
+  if (!window.google) { setTimeout(initTokenClient, 500); return; }
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: (resp) => {
+      if (resp.error) { updateAuthUI(false); return; }
+      accessToken = resp.access_token;
+      sessionStorage.setItem('lt_token', accessToken);
+      updateAuthUI(true);
+    }
+  });
+}
+initTokenClient();
+
+function handleAuth() {
+  if (accessToken) {
+    accessToken = null;
+    sessionStorage.removeItem('lt_token');
+    updateAuthUI(false);
+  } else {
+    if (tokenClient) tokenClient.requestAccessToken();
+    else alert('Google auth not loaded yet — try again in a moment.');
+  }
+}
+
+function updateAuthUI(connected) {
+  document.getElementById('auth-dot').className   = 'auth-dot' + (connected ? ' connected' : '');
+  document.getElementById('auth-label').textContent = connected ? 'Connected to Sheets' : 'Not connected to Sheets';
+  document.getElementById('auth-btn').textContent   = connected ? 'Sign out' : 'Sign in';
+}
+
+// ─── SHEETS APPEND ────────────────────────────────────────
+async function appendRow(values) {
+  if (!accessToken) return { ok: false, msg: 'Not signed in to Google.' };
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(SHEET_TAB)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ values: [values] })
+    });
+    if (res.ok) return { ok: true };
+    const err = await res.json();
+    // Token may have expired
+    if (res.status === 401) { accessToken = null; sessionStorage.removeItem('lt_token'); updateAuthUI(false); }
+    return { ok: false, msg: err.error?.message || 'Sheets error' };
+  } catch(e) { return { ok: false, msg: 'Network error — will retry when online.' }; }
+}
+
+function showSaveStatus(id, ok, msg) {
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  el.className = 'save-status ' + (ok ? 'ok' : 'err');
+  el.textContent = ok ? '✓ Saved to Google Sheets' : '⚠ ' + msg;
+}
+
+// ─── SCORE BUTTONS ────────────────────────────────────────
+const blockScores = {};
+document.querySelectorAll('.score-group').forEach(g => {
+  blockScores[g.dataset.block] = null;
+  g.querySelectorAll('.score-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      g.querySelectorAll('.score-btn').forEach(b => b.className = 'score-btn');
+      const v = parseInt(btn.dataset.val);
+      btn.classList.add('s' + v);
+      blockScores[g.dataset.block] = v;
+    });
+  });
+});
+
+// ─── SLEEP CALC ───────────────────────────────────────────
+function calcSleep() {
+  const lo = document.getElementById('l-lights-out').value;
+  const wt = document.getElementById('l-wake-time').value;
+  if (!lo || !wt) return null;
+  const [lh,lm] = lo.split(':').map(Number);
+  const [wh,wm] = wt.split(':').map(Number);
+  let mins = (wh*60+wm)-(lh*60+lm);
+  if (mins < 0) mins += 1440;
+  const hrs = (mins/60).toFixed(1);
+  document.getElementById('l-sleep-hrs').textContent = hrs + 'h';
+  const diff = parseFloat(hrs) - 7.5;
+  const vsEl = document.getElementById('l-sleep-vs');
+  vsEl.textContent = (diff >= 0 ? '+' : '') + diff.toFixed(1) + 'h';
+  vsEl.style.color = diff >= -0.5 ? 'var(--success)' : 'var(--danger)';
+  return hrs;
+}
+document.getElementById('l-lights-out').addEventListener('change', calcSleep);
+document.getElementById('l-wake-time').addEventListener('change', calcSleep);
+calcSleep();
+
+// ─── EVENING STATE ────────────────────────────────────────
+let eveDayType = 'weekday', learnType = null;
+const eveMetrics = { focus: null, mood: null, energy: null };
+
+function setEveDay(type, el) {
+  eveDayType = type;
+  document.querySelectorAll('#e-day-pills .pill').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('e-weekday-section').style.display = type === 'weekday' ? 'block' : 'none';
+  document.getElementById('e-weekend-section').style.display = type === 'weekend' ? 'block' : 'none';
+}
+
+function setLearn(type, el) {
+  learnType = type;
+  document.querySelectorAll('#e-learn-pills .pill').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+}
+
+['focus','mood','energy'].forEach(m => {
+  const c = document.getElementById('e-' + m + '-stars');
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'star'; btn.textContent = '★'; btn.dataset.val = i;
+    btn.addEventListener('click', () => {
+      eveMetrics[m] = i;
+      c.querySelectorAll('.star').forEach((b,idx) => b.classList.toggle('lit', idx < i));
+    });
+    c.appendChild(btn);
+  }
+});
+
+// ─── WEEKLY STATE ─────────────────────────────────────────
+const wDomain = { investing: null, social: null, health: null };
+['investing','social','health'].forEach(d => {
+  const c = document.getElementById('w-stars-' + d);
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'star'; btn.textContent = '★'; btn.dataset.val = i;
+    btn.addEventListener('click', () => {
+      wDomain[d] = i;
+      c.querySelectorAll('.star').forEach((b,idx) => b.classList.toggle('lit', idx < i));
+    });
+    c.appendChild(btn);
+  }
+});
+
+// ─── AI CALL ──────────────────────────────────────────────
+async function callClaude(prompt) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{role:'user', content: prompt}] })
+  });
+  const data = await res.json();
+  return data.content?.find(b => b.type === 'text')?.text || '';
+}
+
+// ─── SUBMIT LUNCH ─────────────────────────────────────────
+async function submitLunch() {
+  const btn  = document.getElementById('l-submit');
+  const note = document.getElementById('l-coach-note');
+  const lo   = document.getElementById('l-lights-out').value;
+  const wt   = document.getElementById('l-wake-time').value;
+  const hrs  = calcSleep();
+  const dw   = document.getElementById('l-deep-work').value.trim();
+  const intent = document.getElementById('l-intention').value.trim();
+  const wakeup  = blockScores['l-wakeup'];
+  const morning = blockScores['l-morning'];
+  const lunch   = blockScores['l-lunch'];
+  const total   = [wakeup, morning, lunch].filter(v => v !== null).reduce((a,b) => a+b, 0);
+
+  btn.textContent = 'Saving...'; btn.disabled = true;
+  note.style.display = 'block'; note.textContent = '...';
+
+  // Save to Sheets
+  const row = [
+    isoDate(now), '', wt, lo, hrs ?? '',
+    wakeup ?? '', morning ?? '', lunch ?? '',
+    '', '', '', '', total,
+    dw, '', '', '', '', '', intent
+  ];
+  const saved = await appendRow(row);
+  showSaveStatus('l-save-status', saved.ok, saved.msg);
+
+  // Coach note
+  try {
+    const text = await callClaude(`You are a brief, warm performance coach reviewing someone's morning data. Give a 2-3 sentence coach note — specific, honest, and forward-looking toward their afternoon. No fluff, no lists.
+Sleep: lights out ${lo}, wake ${wt}, ${hrs}h (target 7.5h)
+Wake-up block (run/stretch/meditate): ${wakeup ?? 'unscored'}/2
+Morning block (agenda/deep work/no media): ${morning ?? 'unscored'}/2
+Lunch block (journal/meditate/walk): ${lunch ?? 'unscored'}/2
+Morning total: ${total}/6
+Deep work: ${dw || 'not noted'}
+Afternoon intention: ${intent || 'not noted'}`);
+    note.textContent = text || 'Could not generate note.';
+  } catch(e) { note.textContent = 'Saved to sheet. Could not reach AI.'; }
+
+  btn.textContent = 'Logged ✓'; btn.style.color = 'var(--success)';
+}
+
+// ─── SUBMIT EVENING ───────────────────────────────────────
+async function submitEvening() {
+  const btn  = document.getElementById('e-submit');
+  const note = document.getElementById('e-coach-note');
+  const detail = document.getElementById('e-learn-detail').value.trim();
+  const afternoon = blockScores['e-afternoon'];
+  const dinner    = blockScores['e-dinner'];
+  const winddown  = blockScores['e-winddown'];
+  const weekend   = blockScores['e-weekend'];
+  const isWeekend = eveDayType === 'weekend';
+  const rel   = isWeekend ? [weekend] : [afternoon, dinner, winddown];
+  const total = rel.filter(v => v !== null).reduce((a,b) => a+b, 0);
+  const max   = isWeekend ? 2 : 6;
+
+  btn.textContent = 'Saving...'; btn.disabled = true;
+  note.style.display = 'block'; note.textContent = '...';
+
+  // Update existing row for today or append new one
+  // We append a new row with evening data; date matching in sheet
+  const row = [
+    isoDate(now), eveDayType, '', '', '',
+    '', '', '',
+    afternoon ?? '', dinner ?? '', winddown ?? '', weekend ?? '',
+    total,
+    '', learnType || '', detail,
+    eveMetrics.focus ?? '', eveMetrics.mood ?? '', eveMetrics.energy ?? '', ''
+  ];
+  const saved = await appendRow(row);
+  showSaveStatus('e-save-status', saved.ok, saved.msg);
+
+  // Day summary
+  const blockStr   = isWeekend ? `weekend: ${weekend ?? 'unscored'}/2` : `afternoon: ${afternoon ?? 'unscored'}/2, dinner: ${dinner ?? 'unscored'}/2, winddown: ${winddown ?? 'unscored'}/2`;
+  const metricStr  = Object.entries(eveMetrics).map(([k,v]) => `${k}: ${v ?? 'unscored'}/5`).join(', ');
+  try {
+    const text = await callClaude(`You are a concise, insightful performance coach. The user is a high-achieving equity analyst. Write a 3-sentence day summary: one on what today's data suggests, one on a connection worth noting, one forward-looking for tomorrow. Specific and direct — no generic encouragement.
+Day type: ${eveDayType}
+Block scores: ${blockStr} (${total}/${max})
+Learning: ${learnType || 'not logged'} — ${detail || 'no detail'}
+Daily scores: ${metricStr}`);
+    note.textContent = text || 'Could not generate summary.';
+  } catch(e) { note.textContent = 'Saved to sheet. Could not reach AI.'; }
+
+  btn.textContent = 'Logged ✓'; btn.style.color = 'var(--success)';
+}
+
+// ─── SUBMIT WEEKLY ────────────────────────────────────────
+async function submitWeekly() {
+  const btn = document.getElementById('w-submit');
+  const box = document.getElementById('w-insight-box');
+  btn.textContent = 'Generating...'; btn.disabled = true;
+  box.style.display = 'block';
+  ['pattern','bright','focus'].forEach(k => document.getElementById('w-ins-' + k).textContent = '...');
+
+  const vals = {
+    sleep:      document.getElementById('w-sleep').value,
+    blocks:     document.getElementById('w-blocks').value,
+    focus:      document.getElementById('w-focus').value,
+    mood:       document.getElementById('w-mood').value,
+    energy:     document.getElementById('w-energy').value,
+    learn:      document.getElementById('w-learn').value,
+    friction:   document.getElementById('w-friction').value.trim(),
+    adjustment: document.getElementById('w-adjustment').value.trim()
+  };
+
+  try {
+    const raw = await callClaude(`You are a sharp, direct performance coach doing a weekly review with a high-achieving equity analyst tracking daily habits. His goal: become a great investor while building excellent health and life habits.
+
+Generate exactly 3 insights as JSON: "pattern", "bright", "focus". Each 1-2 sentences. Data-grounded and honest.
+
+Avg sleep: ${vals.sleep || 'not provided'}
+Avg block score: ${vals.blocks || 'not provided'}
+Avg focus/mood/energy: ${vals.focus || '—'} / ${vals.mood || '—'} / ${vals.energy || '—'}
+Learning days: ${vals.learn || 'not provided'}
+Investing output: ${wDomain.investing ?? 'unrated'}/5 | Social/dating: ${wDomain.social ?? 'unrated'}/5 | Health: ${wDomain.health ?? 'unrated'}/5
+Main friction: ${vals.friction || 'not specified'}
+Planned adjustment: ${vals.adjustment || 'not specified'}
+
+Return ONLY valid JSON, no markdown. Example: {"pattern":"...","bright":"...","focus":"..."}`);
+
+    const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    document.getElementById('w-ins-pattern').textContent = parsed.pattern || '—';
+    document.getElementById('w-ins-bright').textContent  = parsed.bright  || '—';
+    document.getElementById('w-ins-focus').textContent   = parsed.focus   || '—';
+  } catch(e) {
+    document.getElementById('w-ins-pattern').textContent = 'Could not generate insights.';
+    document.getElementById('w-ins-bright').textContent  = '';
+    document.getElementById('w-ins-focus').textContent   = '';
+  }
+
+  btn.textContent = 'Review complete ✓'; btn.style.color = 'var(--success)';
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
